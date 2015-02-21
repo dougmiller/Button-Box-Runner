@@ -23,6 +23,10 @@ int lastButtonStateB1 = HIGH;
 int buttonStateB2 = HIGH;
 int lastButtonStateB2 = HIGH;
 
+// Serial reading
+String inputString = "";
+boolean stringComplete = false;
+
 // Helper functions
 void turnOn(int pin) {
     digitalWrite(pin, HIGH);
@@ -63,7 +67,7 @@ void setup() {
     digitalWrite(redLED, LOW);
     
     // INPUT_PULLUP sets input buttons when unconnected to high
-    // this means that the 'pressed' stated outputs low
+    // this means that the 'pressed' state outputs low
     pinMode(redButton1, INPUT_PULLUP);
     pinMode(redButton2, INPUT_PULLUP);
     pinMode(blackButton1, INPUT_PULLUP);
@@ -82,6 +86,7 @@ void loop() {
         if (buttonStateR1 != lastButtonStateR1) {
             if (buttonStateR1 == LOW) {
                 startFlash();
+                Serial.println('R1');
             }
         }
         lastButtonStateR1 = buttonStateR1;
@@ -93,6 +98,7 @@ void loop() {
         if (buttonStateR2 != lastButtonStateR2) {
             if (buttonStateR2 == LOW) {
                 startFlash();
+                Serial.println('R2');               
             }
         }
         lastButtonStateR2 = buttonStateR2;
@@ -103,6 +109,7 @@ void loop() {
         if (buttonStateB1 != lastButtonStateB1) {
             if (buttonStateB1 == LOW) {
                 startFlash();
+                Serial.println('B1');
             }
         }
         lastButtonStateB1 = buttonStateB1;
@@ -113,9 +120,31 @@ void loop() {
         if (buttonStateB2 != lastButtonStateB2) {
             if (buttonStateB2 == LOW) {
                 startFlash();
+                Serial.println('B2');
             }
         }
         lastButtonStateB2 = buttonStateB2;
     }
+
+    if (stringComplete) {
+        if (inputString.equals("OK")) {
+            successFlash();
+        } else {
+            failureFlash();
+        };
+
+        inputString = "";
+        stringComplete = false;
+    }
+}
+
+void serialEvent() {
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
 }
 
