@@ -65,7 +65,7 @@ void setup() {
     pinMode(redLED, OUTPUT);
     digitalWrite(greenLED, LOW);
     digitalWrite(redLED, LOW);
-    
+
     // INPUT_PULLUP sets input buttons when unconnected to high
     // this means that the 'pressed' state outputs low
     pinMode(redButton1, INPUT_PULLUP);
@@ -82,69 +82,68 @@ void loop() {
     if (digitalRead(safetyToggle) == LOW) { // 'safety' toggle
         // Button Red 1
         buttonStateR1 = digitalRead(redButton1);
-        
+
         if (buttonStateR1 != lastButtonStateR1) {
             if (buttonStateR1 == LOW) {
+                Serial.println("R1");
                 startFlash();
-                Serial.println('R1');
             }
         }
         lastButtonStateR1 = buttonStateR1;
-        
-        
+
+
         // Button Red 2
         buttonStateR2 = digitalRead(redButton2);
-        
+
         if (buttonStateR2 != lastButtonStateR2) {
             if (buttonStateR2 == LOW) {
+                Serial.println("R2");               
                 startFlash();
-                Serial.println('R2');               
             }
         }
         lastButtonStateR2 = buttonStateR2;
-        
+
         // Button Black 1
         buttonStateB1 = digitalRead(blackButton1);
-        
+
         if (buttonStateB1 != lastButtonStateB1) {
             if (buttonStateB1 == LOW) {
+                Serial.println("B1");
                 startFlash();
-                Serial.println('B1');
             }
         }
         lastButtonStateB1 = buttonStateB1;
-        
+
         //Button Black 2
         buttonStateB2 = digitalRead(blackButton2);
-        
+
         if (buttonStateB2 != lastButtonStateB2) {
             if (buttonStateB2 == LOW) {
+                Serial.println("B2");
                 startFlash();
-                Serial.println('B2');
             }
         }
         lastButtonStateB2 = buttonStateB2;
     }
 
     if (stringComplete) {
-        if (inputString.equals("OK")) {
+        if (inputString.equals("OK\n")) {
             successFlash();
-        } else {
+        } 
+        else {
             failureFlash();
         };
 
         inputString = "";
         stringComplete = false;
     }
-}
-
-void serialEvent() {
-  while (Serial.available()) {
-    char inChar = (char)Serial.read();
-    inputString += inChar;
-    if (inChar == '\n') {
-      stringComplete = true;
+    
+    while (Serial.available()) { // serialEvent not supported on current hardware
+        char inChar = (char)Serial.read();
+        inputString += inChar;
+        if (inChar == '\n') {
+            stringComplete = true;
+        }
     }
-  }
 }
 
