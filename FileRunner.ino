@@ -27,6 +27,8 @@ int lastButtonStateB2 = HIGH;
 String inputString = "";
 boolean stringComplete = false;
 
+boolean processing = false;
+
 // Helper functions
 void turnOn(int pin) {
     digitalWrite(pin, HIGH);
@@ -127,6 +129,7 @@ void loop() {
     }
 
     if (stringComplete) {
+        boolean processing = false;
         if (inputString.equals("OK\n")) {
             successFlash();
         } 
@@ -139,6 +142,7 @@ void loop() {
     }
     
     while (Serial.available()) { // serialEvent not supported on current hardware
+        processing = false;
         char inChar = (char)Serial.read();
         inputString += inChar;
         if (inChar == '\n') {
